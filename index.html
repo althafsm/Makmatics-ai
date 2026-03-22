@@ -3,313 +3,451 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Makmatics-ai - AI Math & Physics Tutor</title>
-    <script src="https://cdn.geogebra.org/apps/deployggb.js"></script>
+    <title>Makmatics-ai | Next Gen Tutor</title>
+    <!-- Import Math Engine & Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/nerdamer@latest/nerdamer.core.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nerdamer@latest/Algebra.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nerdamer@latest/Calculus.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nerdamer@latest/Solve.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    
     <style>
+        :root {
+            --primary: #00f2ff;
+            --secondary: #0077ff;
+            --glass: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --bg-dark: #0a0e17;
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            font-family: 'Poppins', sans-serif;
+            background: radial-gradient(circle at top right, #1a2980, #000000);
             color: white;
             min-height: 100vh;
+            overflow-x: hidden;
         }
-        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
-        h1 { 
-            text-align: center; 
-            font-size: 2.5em; 
-            margin-bottom: 10px; 
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+
+        /* Animated Background Particles */
+        .bg-particles {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(0, 119, 255, 0.15) 0%, transparent 10%),
+                radial-gradient(circle at 80% 70%, rgba(0, 242, 255, 0.15) 0%, transparent 10%);
+            animation: pulseBg 10s infinite alternate;
         }
-        .subtitle { text-align: center; margin-bottom: 30px; opacity: 0.9; }
-        .section {
-            background: rgba(255,255,255,0.1);
+
+        @keyframes pulseBg {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.1); }
+        }
+
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            margin-bottom: 40px;
+        }
+
+        .logo {
+            font-size: 2em;
+            font-weight: 700;
+            background: linear-gradient(90deg, #fff, #00f2ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(0, 242, 255, 0.3);
+        }
+
+        .credits-box {
+            background: var(--glass);
+            padding: 10px 20px;
+            border-radius: 50px;
+            border: 1px solid var(--primary);
+            box-shadow: 0 0 15px rgba(0, 242, 255, 0.2);
+            font-weight: 600;
+        }
+
+        /* Glass Cards */
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
             border-radius: 20px;
-            padding: 25px;
-            margin: 20px 0;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.2);
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            transition: transform 0.3s ease;
         }
-        .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
-        .tab { 
-            padding: 12px 24px; 
-            background: rgba(255,255,255,0.2); 
-            border: none; 
-            border-radius: 50px; 
-            color: white; 
-            cursor: pointer; 
-            transition: all 0.3s;
-        }
-        .tab.active { background: #4a90e2; transform: scale(1.05); }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-        .input-group { 
-            display: flex; 
-            gap: 10px; 
-            margin-bottom: 20px; 
-            flex-wrap: wrap;
-        }
-        input, textarea, button {
-            padding: 12px;
-            border: none;
-            border-radius: 10px;
+
+        .glass-card:hover { transform: translateY(-5px); }
+
+        h2 { margin-bottom: 20px; color: var(--primary); display: flex; align-items: center; gap: 10px; }
+
+        /* AI Input Area */
+        .ai-interface { display: flex; flex-direction: column; gap: 15px; }
+        
+        textarea {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 15px;
+            color: white;
+            font-family: 'Poppins', sans-serif;
             font-size: 16px;
+            resize: vertical;
+            min-height: 100px;
         }
-        input, textarea { 
-            background: rgba(255,255,255,0.9); 
-            color: #333; 
-            flex: 1; 
-            min-width: 200px;
-        }
-        button { 
-            background: #4a90e2; 
-            color: white; 
-            cursor: pointer; 
-            transition: all 0.3s;
-        }
-        button:hover { background: #357abd; transform: translateY(-2px); }
-        .hint { 
-            background: rgba(76, 175, 80, 0.2); 
-            padding: 20px; 
-            border-radius: 15px; 
-            margin: 20px 0; 
-            border-left: 5px solid #4caf50;
-        }
-        .cards-grid, .quizzes-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
-            gap: 15px; 
-            margin-top: 20px;
-        }
-        .card { 
-            background: rgba(255,255,255,0.15); 
-            padding: 20px; 
-            border-radius: 15px; 
+
+        textarea:focus { outline: none; border-color: var(--primary); }
+
+        .btn-group { display: flex; gap: 10px; flex-wrap: wrap; }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
+            font-family: 'Poppins', sans-serif;
         }
-        .card:hover { transform: translateY(-5px); background: rgba(255,255,255,0.25); }
-        .credits { 
-            position: fixed; 
-            top: 20px; 
-            right: 20px; 
-            background: rgba(0,0,0,0.7); 
-            padding: 10px 20px; 
-            border-radius: 25px; 
-            font-weight: bold;
+
+        .btn-primary {
+            background: linear-gradient(90deg, var(--secondary), var(--primary));
+            color: white;
         }
-        .error { background: rgba(244,67,54,0.2); border-left: 5px solid #f44336; }
+        .btn-primary:hover { box-shadow: 0 0 20px rgba(0, 119, 255, 0.5); }
+
+        .btn-check { background: #00c853; color: white; }
+        .btn-check:hover { background: #00e676; box-shadow: 0 0 15px rgba(0, 200, 83, 0.4); }
+
+        .btn-reveal { background: #ff3d00; color: white; }
+        .btn-reveal:hover { background: #ff6e40; box-shadow: 0 0 15px rgba(255, 61, 0, 0.4); }
+
+        /* Output Areas */
+        .output-box {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            background: rgba(0,0,0,0.2);
+            border-left: 4px solid var(--primary);
+            display: none;
+            line-height: 1.6;
+        }
+
+        .user-answer-area {
+            display: flex; gap: 10px; margin-top: 15px;
+        }
+
+        /* Tabs */
+        .tabs { display: flex; gap: 15px; margin-bottom: 20px; }
+        .tab-btn {
+            background: transparent;
+            color: rgba(255,255,255,0.6);
+            border: 1px solid var(--glass-border);
+        }
+        .tab-btn.active {
+            background: var(--primary);
+            color: #000;
+            border-color: var(--primary);
+        }
+
+        /* Grid for Cards */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .mini-card {
+            background: rgba(255,255,255,0.05);
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.1);
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .mini-card:hover { background: rgba(255,255,255,0.1); }
+        .mini-card h4 { color: var(--primary); margin-bottom: 10px; }
+
+        /* Animations */
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in { animation: slideIn 0.5s ease forwards; }
+
     </style>
 </head>
 <body>
-    <div class="credits" id="credits">Credits: 300/300 📚</div>
-    
-    <div class="container">
-        <h1>🧮 Makmatics-ai</h1>
-        <p class="subtitle">Your AI Math & Physics Tutor • Hints Only • 300 Credits/Day</p>
 
-        <!-- AI Tutor Section -->
-        <div class="section">
-            <h2>🤖 AI Tutor (Math & Physics)</h2>
-            <div class="input-group">
-                <textarea id="mathInput" placeholder="Enter your math/physics problem... e.g., 'Solve x² + 5x + 6 = 0' or 'What is velocity?'"></textarea>
-                <button onclick="getMathHint()">Get Hint (2 credits) ➡️</button>
+    <div class="bg-particles"></div>
+
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="logo">Makmatics-ai ⚡</div>
+            <div class="credits-box" id="creditDisplay">💎 300 Credits</div>
+        </header>
+
+        <!-- Main AI Section -->
+        <div class="glass-card fade-in">
+            <h2>🧠 Smart Tutor & Solver</h2>
+            <div class="ai-interface">
+                <textarea id="problemInput" placeholder="Type a math problem (e.g., solve 2x + 5 = 15) or a physics question..."></textarea>
+                
+                <div class="btn-group">
+                    <button class="btn-primary" onclick="getHint()">💡 Get Easy Hint (2💎)</button>
+                    <button class="btn-reveal" onclick="revealAnswer()">🔓 Reveal Answer (5💎)</button>
+                </div>
+
+                <!-- Check Answer Section -->
+                <div class="user-answer-area">
+                    <input type="text" id="userAttempt" placeholder="Type your answer here..." style="flex:1; padding:12px; border-radius:10px; border:none;">
+                    <button class="btn-check" onclick="checkUserAnswer()">✅ Check</button>
+                </div>
+
+                <div id="aiOutput" class="output-box"></div>
             </div>
-            <div id="mathHint"></div>
         </div>
 
-        <!-- Tabs for Flashcards & Quizzes -->
-        <div class="section">
-            <h2>📚 Learn & Create</h2>
+        <!-- Learning Tools Section -->
+        <div class="glass-card fade-in" style="animation-delay: 0.2s;">
             <div class="tabs">
-                <button class="tab active" onclick="showTab('flashcards')">Flashcards</button>
-                <button class="tab" onclick="showTab('quizzes')">Quizzes</button>
+                <button class="tab-btn active" onclick="switchTab('flashcards')">Flashcards</button>
+                <button class="tab-btn" onclick="switchTab('quizzes')">Quizzes</button>
             </div>
 
             <!-- Flashcards -->
-            <div id="flashcards" class="tab-content active">
-                <div class="input-group">
-                    <input id="flashFront" placeholder="Front (Question)">
-                    <input id="flashBack" placeholder="Back (Answer/Hint)">
-                    <button onclick="addFlashcard()">➕ Add Flashcard</button>
+            <div id="flashcards" class="tab-content">
+                <div class="user-answer-area" style="margin-bottom: 20px;">
+                    <input id="fFront" placeholder="Question (Front)" style="flex:1; padding:10px; border-radius:8px;">
+                    <input id="fBack" placeholder="Answer (Back)" style="flex:1; padding:10px; border-radius:8px;">
+                    <button class="btn-primary" onclick="addFlashcard()">➕ Add</button>
                 </div>
-                <div id="flashcardsGrid" class="cards-grid"></div>
+                <div id="flashGrid" class="grid"></div>
             </div>
 
             <!-- Quizzes -->
-            <div id="quizzes" class="tab-content">
-                <div class="input-group">
-                    <input id="quizQuestion" placeholder="Quiz Question">
-                    <input id="quizAnswer" placeholder="Correct Answer">
-                    <button onclick="addQuiz()">➕ Add Quiz Question</button>
+            <div id="quizzes" class="tab-content" style="display:none;">
+                <div class="user-answer-area" style="margin-bottom: 20px;">
+                    <input id="qQuestion" placeholder="Quiz Question" style="flex:1; padding:10px; border-radius:8px;">
+                    <input id="qAnswer" placeholder="Correct Answer" style="flex:1; padding:10px; border-radius:8px;">
+                    <button class="btn-primary" onclick="addQuiz()">➕ Add</button>
                 </div>
-                <div id="quizzesGrid" class="quizzes-grid"></div>
+                <div id="quizGrid" class="grid"></div>
             </div>
         </div>
     </div>
 
     <script>
-        // 🔧 SYSTEM SETUP
+        // 💎 SYSTEM CONFIG
         let credits = 300;
-        let flashcards = JSON.parse(localStorage.getItem('makmaticsFlashcards')) || [];
-        let quizzes = JSON.parse(localStorage.getItem('makmaticsQuizzes')) || [];
-        let currentTab = 'flashcards';
+        let solvedResult = null; // Stores the real answer hidden from user
+        
+        // Load data
+        let flashcards = JSON.parse(localStorage.getItem('makFlash')) || [];
+        let quizzes = JSON.parse(localStorage.getItem('makQuiz')) || [];
 
-        // Update credits display
         function updateCredits() {
-            document.getElementById('credits').textContent = `Credits: ${credits}/300 📚`;
+            document.getElementById('creditDisplay').innerHTML = `💎 ${credits} Credits`;
+            if (credits <= 0) alert("You are out of credits for today!");
         }
 
-        // Tab switching
-        function showTab(tab) {
-            currentTab = tab;
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.getElementById(tab).classList.add('active');
-            event.target.classList.add('active');
-            if (tab === 'flashcards') renderFlashcards();
-            else renderQuizzes();
+        // 🧠 AI & MATH ENGINE (Nerdamer)
+        function solveInternal(input) {
+            try {
+                // If it's a "solve" command
+                if (input.toLowerCase().includes('solve')) {
+                    // Extract equation
+                    let eq = input.toLowerCase().replace('solve', '').trim();
+                    let solution = nerdamer.solve(eq, 'x');
+                    return { type: 'math', answer: solution.toString(), step: "Isolate the variable." };
+                }
+                // If it's simple arithmetic
+                else if (input.match(/[0-9]/)) {
+                    let solution = nerdamer(input).evaluate();
+                    return { type: 'math', answer: solution.text(), step: "Perform operations (PEMDAS)." };
+                }
+                // Physics Keywords (Simple Logic)
+                else {
+                    return { type: 'physics', answer: "I can't calculate physics text yet, but I can check math formulas!", step: "Check your units." };
+                }
+            } catch (e) {
+                return null;
+            }
         }
 
-        // 🎯 AI MATH HINTS (GeoGebra-powered + Smart Fallbacks)
-        async function getMathHint() {
-            if (credits < 2) {
-                showHint('❌ Out of credits! Wait for tomorrow or refresh. Daily reset at midnight.', 'error');
-                return;
-            }
-
-            const input = document.getElementById('mathInput').value.trim();
-            if (!input) {
-                showHint('📝 Please enter a math or physics problem first!', 'error');
-                return;
-            }
+        function getHint() {
+            if (credits < 2) return alert("Not enough credits!");
+            
+            let input = document.getElementById('problemInput').value;
+            if (!input) return alert("Please type a problem first.");
 
             credits -= 2;
             updateCredits();
-            showHint('🤔 Thinking... (using GeoGebra Math Engine)', 'hint');
 
-            try {
-                // ✅ Primary: GeoGebra Math Solver (Reliable & Free)
-                const result = await solveWithGeoGebra(input);
-                showHint(result, 'hint');
-            } catch (error) {
-                // ✅ Fallback 1: Built-in Smart Hints
-                const fallback = getSmartHint(input);
-                showHint(fallback, 'hint');
-            }
-        }
+            // Calculate silently
+            let result = solveInternal(input);
+            solvedResult = result ? result.answer : null;
 
-        // GeoGebra Integration (Direct API Call)
-        async function solveWithGeoGebra(problem) {
-            // GeoGebra's free solver endpoint (stable, no auth needed)
-            const response = await fetch('https://api.geogebra.org/v1/simple', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ input: problem, format: 'latex' })
-            });
+            let output = document.getElementById('aiOutput');
+            output.style.display = 'block';
             
-            if (response.ok) {
-                const data = await response.json();
-                return `✅ **GeoGebra Hint**: ${data.hint || data.solution || 'Try factoring or graphing this equation.'}  
-                💡 Next step: Focus on the ${data.key_term || 'main term'}.`;
-            }
-            throw new Error('GeoGebra temp unavailable');
-        }
-
-        // Smart Built-in Hints (Offline Fallback)
-        function getSmartHint(problem) {
-            const lower = problem.toLowerCase();
-            if (lower.includes('quadratic') || lower.includes('x²')) {
-                return '💡 **Quadratic Hint**: Try factoring (look for two numbers that multiply to c and add to b) or use the quadratic formula: x = [-b ± √(b²-4ac)] / 2a';
-            } else if (lower.includes('velocity') || lower.includes('speed')) {
-                return '🚀 **Physics Hint**: Velocity = distance ÷ time. Check units (m/s). Is there acceleration?';
-            } else if (lower.includes('pythagoras')) {
-                return '📐 **Pythagoras**: a² + b² = c². The longest side is always c!';
-            }
-            // Generic hint library (expand this!)
-            return '🤔 **General Math Hint**: 1. Identify variables 2. Write what you know 3. Choose formula 4. Substitute 5. Solve step-by-step. What\'s your first step?';
-        }
-
-        function showHint(text, type = 'hint') {
-            const hintEl = document.getElementById('mathHint');
-            hintEl.innerHTML = `<div class="${type}">${text}</div>`;
-            hintEl.scrollIntoView({ behavior: 'smooth' });
-        }
-
-        // 📚 FLASHCARDS (Local + Firebase Ready)
-        function addFlashcard() {
-            const front = document.getElementById('flashFront').value.trim();
-            const back = document.getElementById('flashBack').value.trim();
-            
-            if (front && back) {
-                flashcards.push({ front, back, id: Date.now(), created: new Date().toLocaleString() });
-                localStorage.setItem('makmaticsFlashcards', JSON.stringify(flashcards));
-                renderFlashcards();
-                document.getElementById('flashFront').value = '';
-                document.getElementById('flashBack').value = '';
-            }
-        }
-
-        function renderFlashcards() {
-            const grid = document.getElementById('flashcardsGrid');
-            grid.innerHTML = flashcards.map(card => `
-                <div class="card" onclick="showFlashcard('${card.id}')">
-                    <h4>${card.front}</h4>
-                    <small>${card.created}</small>
-                </div>
-            `).join('');
-        }
-
-        function showFlashcard(id) {
-            const card = flashcards.find(c => c.id == id);
-            alert(`Q: ${card.front}\n\nA: ${card.back}`);
-        }
-
-        // 🧪 QUIZZES (Local + Firebase Ready)
-        function addQuiz() {
-            const question = document.getElementById('quizQuestion').value.trim();
-            const answer = document.getElementById('quizAnswer').value.trim();
-            
-            if (question && answer) {
-                quizzes.push({ question, answer, id: Date.now(), score: 0 });
-                localStorage.setItem('makmaticsQuizzes', JSON.stringify(quizzes));
-                renderQuizzes();
-                document.getElementById('quizQuestion').value = '';
-                document.getElementById('quizAnswer').value = '';
-            }
-        }
-
-        function renderQuizzes() {
-            const grid = document.getElementById('quizzesGrid');
-            grid.innerHTML = quizzes.map(quiz => `
-                <div class="card" onclick="playQuiz('${quiz.id}')">
-                    <h4>${quiz.question}</h4>
-                    <small>Play Quiz</small>
-                </div>
-            `).join('');
-        }
-
-        function playQuiz(id) {
-            const quiz = quizzes.find(q => q.id == id);
-            const userAnswer = prompt(quiz.question);
-            if (userAnswer.toLowerCase().trim() === quiz.answer.toLowerCase().trim()) {
-                alert('🎉 Correct! Great job!');
+            // Generate Easier Hint
+            if (result && result.type === 'math') {
+                output.innerHTML = `
+                    <strong>💡 Expert Hint:</strong><br>
+                    Don't give up! ${result.step}<br>
+                    <em>Try to move all numbers to one side. What happens if you do that?</em>
+                `;
             } else {
-                alert(`❌ Not quite! Hint: ${quiz.answer}`);
+                // Generic Physics/Concept Hint
+                output.innerHTML = `<strong>💡 Hint:</strong> Break this problem down into smaller parts. Define your variables first.`;
             }
         }
 
-        // 🔥 INIT (Load saved data)
-        updateCredits();
-        renderFlashcards();
-        renderQuizzes();
+        function checkUserAnswer() {
+            let userAns = document.getElementById('userAttempt').value.trim();
+            if (!userAns) return alert("Type an answer first!");
 
-        // Daily credit reset (simple local check)
-        const today = new Date().toDateString();
-        if (localStorage.getItem('lastReset') !== today) {
-            credits = 300;
-            localStorage.setItem('lastReset', today);
-            updateCredits();
+            // Re-calculate to be sure
+            let input = document.getElementById('problemInput').value;
+            let result = solveInternal(input);
+
+            if (!result || !result.answer) {
+                alert("I need a math equation to check answers!");
+                return;
+            }
+
+            // Clean strings for comparison (remove brackets, spaces)
+            let cleanUser = userAns.replace(/[\[\]\s]/g, '');
+            let cleanReal = result.answer.replace(/[\[\]\s]/g, '');
+
+            if (cleanUser === cleanReal) {
+                // CORRECT!
+                confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+                document.getElementById('aiOutput').innerHTML = `<strong style="color:#00e676">🎉 CORRECT! Amazing job!</strong>`;
+                document.getElementById('aiOutput').style.display = 'block';
+            } else {
+                // WRONG
+                document.getElementById('aiOutput').innerHTML = `<strong style="color:#ff3d00">❌ Not quite. Try again!</strong>`;
+                document.getElementById('aiOutput').style.display = 'block';
+            }
         }
+
+        function revealAnswer() {
+            if (credits < 5) return alert("Need 5 credits to reveal answer!");
+            
+            let input = document.getElementById('problemInput').value;
+            let result = solveInternal(input);
+
+            if (!result) return alert("I couldn't solve this one automatically.");
+
+            if(confirm("Are you sure? This costs 5 credits. Try to solve it first!")) {
+                credits -= 5;
+                updateCredits();
+                document.getElementById('aiOutput').innerHTML = `<strong>🔓 The Answer is:</strong> <span style="font-size:1.2em; color:var(--primary)">${result.answer}</span>`;
+                document.getElementById('aiOutput').style.display = 'block';
+            }
+        }
+
+        // 📚 TABS LOGIC
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+            document.getElementById(tab).style.display = 'block';
+            
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            if(tab === 'flashcards') renderFlash();
+            else renderQuiz();
+        }
+
+        // ⚡ FLASHCARDS SYSTEM
+        function addFlashcard() {
+            let f = document.getElementById('fFront').value;
+            let b = document.getElementById('fBack').value;
+            if(f && b) {
+                flashcards.push({f, b});
+                localStorage.setItem('makFlash', JSON.stringify(flashcards));
+                renderFlash();
+                document.getElementById('fFront').value = '';
+                document.getElementById('fBack').value = '';
+            }
+        }
+
+        function renderFlash() {
+            let grid = document.getElementById('flashGrid');
+            grid.innerHTML = flashcards.map((c, i) => `
+                <div class="mini-card" onclick="alert('Answer: ${c.b}')">
+                    <h4>📝 ${c.f}</h4>
+                    <small style="color:gray">Tap to flip</small>
+                    <button onclick="deleteItem('flash', ${i}); event.stopPropagation();" style="float:right; background:none; color:red;">🗑️</button>
+                </div>
+            `).join('');
+        }
+
+        // ⚡ QUIZ SYSTEM
+        function addQuiz() {
+            let q = document.getElementById('qQuestion').value;
+            let a = document.getElementById('qAnswer').value;
+            if(q && a) {
+                quizzes.push({q, a});
+                localStorage.setItem('makQuiz', JSON.stringify(quizzes));
+                renderQuiz();
+                document.getElementById('qQuestion').value = '';
+                document.getElementById('qAnswer').value = '';
+            }
+        }
+
+        function renderQuiz() {
+            let grid = document.getElementById('quizGrid');
+            grid.innerHTML = quizzes.map((c, i) => `
+                <div class="mini-card" onclick="playQuiz('${c.a}')">
+                    <h4>❓ ${c.q}</h4>
+                    <small style="color:var(--primary)">Click to Play</small>
+                    <button onclick="deleteItem('quiz', ${i}); event.stopPropagation();" style="float:right; background:none; color:red;">🗑️</button>
+                </div>
+            `).join('');
+        }
+
+        function playQuiz(correct) {
+            let attempt = prompt("Enter your answer:");
+            if (attempt && attempt.toLowerCase() === correct.toLowerCase()) {
+                alert("🎉 Correct!");
+                confetti();
+            } else {
+                alert(`❌ Wrong! The correct answer was: ${correct}`);
+            }
+        }
+
+        function deleteItem(type, index) {
+            if(type === 'flash') {
+                flashcards.splice(index, 1);
+                localStorage.setItem('makFlash', JSON.stringify(flashcards));
+                renderFlash();
+            } else {
+                quizzes.splice(index, 1);
+                localStorage.setItem('makQuiz', JSON.stringify(quizzes));
+                renderQuiz();
+            }
+        }
+
+        // Init
+        renderFlash();
+        updateCredits();
     </script>
 </body>
 </html>
