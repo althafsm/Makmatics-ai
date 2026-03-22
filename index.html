@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MAKMATICS AI</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #e6f2ff 0%, #f0f8ff 100%);
+      margin: 0;
+      padding: 20px;
+      color: #333;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 8px 16px rgba(0, 85, 170, 0.15);
+      padding: 40px 30px;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    h1 {
+      color: #0055aa;
+      margin: 0;
+      font-size: 2.5em;
+    }
+    .tagline {
+      color: #555;
+      margin: 10px 0 0 0;
+      font-size: 16px;
+    }
+    .input-group {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+    }
+    input[type="text"] {
+      flex: 1;
+      min-width: 250px;
+      padding: 12px 15px;
+      border: 2px solid #0055aa;
+      border-radius: 8px;
+      font-size: 16px;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+    input[type="text"]:focus {
+      border-color: #003a70;
+      box-shadow: 0 0 5px rgba(0, 85, 170, 0.2);
+    }
+    button {
+      background-color: #0055aa;
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      transition: all 0.3s;
+    }
+    button:hover {
+      background-color: #003a70;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 85, 170, 0.3);
+    }
+    button:active {
+      transform: translateY(0);
+    }
+    .response {
+      margin-top: 25px;
+      padding: 20px;
+      background-color: #e6f2ff;
+      border-left: 5px solid #0055aa;
+      border-radius: 8px;
+      font-size: 15px;
+      line-height: 1.8;
+      color: #003a70;
+      min-height: 80px;
+      display: none;
+    }
+    .response.show {
+      display: block;
+      animation: slideIn 0.3s ease;
+    }
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .loading {
+      color: #0055aa;
+      font-style: italic;
+      font-weight: bold;
+    }
+    .hint-badge {
+      display: inline-block;
+      background-color: #0055aa;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🧮 MAKMATICS AI</h1>
+      <p class="tagline">Your personal math tutor — I give hints, not answers!</p>
+    </div>
+
+    <div class="input-group">
+      <input type="text" id="problemInput" placeholder="Ask any math problem..." />
+      <button onclick="askAI()">Get Hint 💡</button>
+    </div>
+
+    <div id="response" class="response">
+      <div class="hint-badge">💡 HINT</div>
+      <div id="responseText"></div>
+    </div>
+  </div>
+
+  <script>
+    const API_KEY = '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';
+
+    async function askAI() {
+      const problem = document.getElementById('problemInput').value.trim();
+      const responseDiv = document.getElementById('response');
+      const responseText = document.getElementById('responseText');
+      
+      if (!problem) {
+        responseText.innerHTML = '⚠️ Please enter a math problem first.';
+        responseDiv.classList.add('show');
+        return;
+      }
+
+      responseText.innerHTML = '<span class="loading">🤔 Thinking...</span>';
+      responseDiv.classList.add('show');
+
+      try {
+        const response = await fetch('https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${API_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            inputs: `You are MAKMATICS AI, a helpful math tutor. A student asked: "${problem}". Your job is to give step-by-step HINTS and guidance to help them solve it themselves. Do NOT reveal the complete answer. Be encouraging. Keep your response under 200 words. Start with: "Here's a hint:"`,
+            parameters: { max_new_tokens: 200 }
+          })
+        });
+
+        const data = await response.json();
+
+        if (data.error) {
+          responseText.innerHTML = `❌ Error: ${data.error.message}. Please check your internet or try again.`;
+        } else if (data[0] && data[0].generated_text) {
+          let hint = data[0].generated_text.replace(/.*?Here's a hint:/, 'Here\'s a hint:').trim();
+          responseText.innerHTML = hint;
+        } else {
+          responseText.innerHTML = '❌ Something went wrong. Please try again.';
+        }
+      } catch (error) {
+        responseText.innerHTML = '❌ Connection error. Check your internet and try again.';
+      }
+    }
+
+    // Allow pressing Enter to submit
+    document.getElementById('problemInput').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') askAI();
+    });
+  </script>
+</body>
+</html>
