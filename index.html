@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Makmatics-ai | Math That Makes Sense 🔥</title>
+    <title>Makmatics-ai | Math + AI Learning 🔥</title>
     
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -97,6 +97,18 @@
         .result-wrong { background: rgba(255, 107, 53, 0.2); border: 1px solid #FF6B6B; color: #FF6B6B; }
         .result-hint { background: rgba(0, 123, 255, 0.2); border: 1px solid var(--primary); color: var(--primary); }
 
+        /* AI Chat */
+        .chat-container { margin-top: 20px; }
+        .chat-box {
+            height: 200px; overflow-y: auto; background: rgba(13, 17, 23, 0.6); border-radius: 12px; padding: 15px; margin-bottom: 15px;
+            border: 1px solid var(--gray);
+        }
+        .message { margin-bottom: 12px; padding: 10px 14px; border-radius: 10px; max-width: 85%; }
+        .user-message { background: rgba(0, 123, 255, 0.2); margin-left: auto; text-align: right; }
+        .ai-message { background: rgba(255, 107, 53, 0.1); margin-right: auto; }
+        .chat-input { display: flex; gap: 10px; }
+        .chat-input input { flex: 1; }
+
         /* Flashcards & Quizzes Grid */
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
             gap: 15px; margin-top: 20px;
@@ -122,7 +134,7 @@
 <!-- 🔐 AUTH SCREENS -->
 <div id="authScreen" class="auth-screen">
     <div class="logo">🔥 Makmatics</div>
-    <p class="subtitle">Math made simple — for students like you.</p>
+    <p class="subtitle">Math + AI Learning — Powered by Ollama</p>
 
     <div class="input-group">
         <label for="username">Username</label>
@@ -168,6 +180,7 @@
 
         <div class="nav-tabs">
             <button class="tab-btn active" data-tab="solver">🧮 Solver</button>
+            <button class="tab-btn" data-tab="ai">🤖 AI Tutor</button>
             <button class="tab-btn" data-tab="flashcards">📝 Flashcards</button>
             <button class="tab-btn" data-tab="quizzes">❓ Quiz</button>
         </div>
@@ -190,6 +203,39 @@
                 </div>
 
                 <div id="solverResult" class="result-box"></div>
+            </div>
+        </div>
+
+        <!-- 🤖 AI TUTOR TAB -->
+        <div id="ai" class="tab-content">
+            <div class="card">
+                <h2 class="card-title">🤖 Falcon AI Tutor (via Ollama)</h2>
+                <p style="color:#8B949E; margin-bottom:15px;">Ask anything about math, physics, or essay help!</p>
+                
+                <div class="chat-container">
+                    <div class="chat-box" id="chatBox">
+                        <div class="message ai-message">
+                            👋 Hi! I'm your Falcon AI tutor. I can help with:
+                            <br>• Math problems & explanations
+                            <br>• Physics concepts
+                            <br>• Essay writing guidance
+                            <br>• Study tips
+                            <br><br>Ask me anything!
+                        </div>
+                    </div>
+                    
+                    <div class="chat-input">
+                        <input type="text" id="aiQuestion" placeholder="Ask your question..." />
+                        <button class="btn" onclick="askAI()" style="width:auto;padding:14px 20px;">Ask</button>
+                    </div>
+                </div>
+                
+                <div style="margin-top:15px; font-size:0.9em; color:#8B949E;">
+                    💡 <strong>Note:</strong> To use this feature, you need to:
+                    <br>1. Install <a href="https://ollama.com" target="_blank">Ollama</a>
+                    <br>2. Run: <code>ollama pull falcon:7b-instruct</code>
+                    <br>3. Keep Ollama running in background
+                </div>
             </div>
         </div>
 
@@ -236,7 +282,7 @@
         </div>
 
         <div class="footer">
-            <p>Makmatics-ai • Made with ❤️ for students in Frankfurt & beyond</p>
+            <p>Makmatics-ai • Powered by Ollama Falcon AI • Made with ❤️ for students</p>
             <p><a href="#" onclick="logout()">Sign out</a></p>
         </div>
     </div>
@@ -256,6 +302,7 @@
     const loginScreen = document.getElementById("loginScreen");
     const app = document.getElementById("app");
     const creditCount = document.getElementById("creditCount");
+    const chatBox = document.getElementById("chatBox");
 
     // Initialize
     function init() {
@@ -465,6 +512,45 @@
         el.className = `result-box result-${type}`;
         el.style.display = "block";
         setTimeout(() => el.style.display = "none", 8000);
+    }
+
+    // AI Chat with Ollama
+    async function askAI() {
+        const question = document.getElementById("aiQuestion").value.trim();
+        if (!question) return;
+
+        // Add user message
+        addMessage(question, 'user');
+        document.getElementById("aiQuestion").value = "";
+
+        try {
+            // Call Ollama API (running locally on port 11434)
+            const response = await fetch('http://localhost:11434/api/generate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    model: 'falcon:7b-instruct',
+                    prompt: `You are a friendly math and physics tutor for 13-year-old students. Explain concepts simply with examples. Answer: ${question}`,
+                    stream: false
+                })
+            });
+
+            if (!response.ok) throw new Error('Ollama not running');
+
+            const data = await response.json();
+            addMessage(data.response, 'ai');
+            
+        } catch (error) {
+            addMessage("⚠️ Ollama is not running! Please:<br>1. Install Ollama from <a href='https://ollama.com' target='_blank'>ollama.com</a><br>2. Run: <code>ollama pull falcon:7b-instruct</code><br>3. Keep Ollama running in background", 'ai');
+        }
+    }
+
+    function addMessage(text, sender) {
+        const msgDiv = document.createElement('div');
+        msgDiv.className = `message ${sender}-message`;
+        msgDiv.innerHTML = text;
+        chatBox.appendChild(msgDiv);
+        chatBox.scrollTop = chatBox.scrollHeight;
     }
 
     // Flashcards
