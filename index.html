@@ -1,768 +1,546 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Makmatics-ai | Where Math Gets Lit 🔥</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Makmatics-ai | Math That Makes Sense 🔥</title>
     
-    <!-- Import Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-    
-    <!-- Math Engine & Fun Libraries -->
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Math Engine -->
     <script src="https://cdn.jsdelivr.net/npm/nerdamer@latest/nerdamer.core.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/nerdamer@latest/Algebra.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/nerdamer@latest/Calculus.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/nerdamer@latest/Solve.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
-    
+
     <style>
         :root {
-            --fire: #FF6B35;
-            --purple: #7209B7;
-            --cyan: #00F5FF;
-            --neon: #39FF14;
+            --primary: #007BFF;
+            --accent: #FF6B35;
+            --success: #39FF14;
             --dark: #0D1117;
-            --gray: #21262D;
-            --light: #F0F6FC;
+            --card: #161B22;
+            --text: #F0F6FC;
+            --gray: #30363D;
+            --light: #E6EDF3;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
         body {
             font-family: 'Inter', sans-serif;
             background: var(--dark);
-            color: var(--light);
-            overflow-x: hidden;
+            color: var(--text);
             line-height: 1.6;
+            overflow-x: hidden;
         }
 
-        /* 🌌 Animated Background */
-        .bg-animation {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1;
-            background: radial-gradient(circle at 20% 80%, var(--purple) 0%, transparent 50%),
-                        radial-gradient(circle at 80% 20%, var(--fire) 0%, transparent 50%),
-                        radial-gradient(circle at 40% 40%, var(--cyan) 0%, transparent 50%);
-            filter: blur(100px);
-            animation: bgPulse 8s ease-in-out infinite alternate;
-        }
-
-        @keyframes bgPulse {
-            0% { opacity: 0.3; transform: scale(1); }
-            100% { opacity: 0.6; transform: scale(1.1); }
-        }
-
-        /* 🎮 Gaming Grid Pattern */
-        .grid-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-image: 
-                linear-gradient(var(--cyan)22 1px, transparent 1px),
-                linear-gradient(90deg, var(--cyan)22 1px, transparent 1px);
-            background-size: 50px 50px;
-            z-index: -1;
-            opacity: 0.03;
-            animation: gridMove 20s linear infinite;
-        }
-
-        @keyframes gridMove {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(50px, 50px); }
-        }
-
-        /* 📱 Mobile Container */
-        .app-container {
+        .container {
             max-width: 420px;
             margin: 0 auto;
             min-height: 100vh;
-            background: rgba(33, 38, 45, 0.95);
-            backdrop-filter: blur(20px);
-            border-left: 1px solid var(--gray);
-            border-right: 1px solid var(--gray);
-            position: relative;
-        }
-
-        /* 📱 Mobile Header (Like TikTok) */
-        .mobile-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 20px;
-            background: rgba(13, 17, 23, 0.9);
-            backdrop-filter: blur(10px);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            border-bottom: 1px solid var(--gray);
-        }
-
-        .logo-mobile {
-            font-family: 'Orbitron', monospace;
-            font-weight: 900;
-            font-size: 1.3em;
-            background: linear-gradient(45deg, var(--fire), var(--cyan));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 20px var(--fire);
-        }
-
-        .streak-display {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: linear-gradient(45deg, var(--fire), var(--purple));
-            padding: 8px 16px;
-            border-radius: 25px;
-            font-weight: 700;
-            font-size: 0.9em;
-        }
-
-        .credits-mobile {
-            background: rgba(0, 245, 255, 0.2);
-            border: 2px solid var(--cyan);
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-weight: 700;
-            font-size: 0.85em;
-            animation: creditGlow 2s ease-in-out infinite;
-        }
-
-        @keyframes creditGlow {
-            0%, 100% { box-shadow: 0 0 10px var(--cyan)44; }
-            50% { box-shadow: 0 0 20px var(--cyan)88; }
-        }
-
-        /* 🎯 Main Content Cards */
-        .content-card {
-            margin: 20px;
-            background: rgba(33, 38, 45, 0.8);
-            border: 1px solid var(--gray);
-            border-radius: 20px;
-            overflow: hidden;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .content-card:hover {
-            transform: translateY(-4px);
-            border-color: var(--fire);
-            box-shadow: 0 12px 40px rgba(255, 107, 53, 0.2);
-        }
-
-        .card-header {
             padding: 20px;
-            background: linear-gradient(135deg, var(--purple), var(--fire));
-            color: white;
-            text-align: center;
         }
 
-        .card-title {
-            font-family: 'Orbitron', monospace;
-            font-size: 1.4em;
-            font-weight: 700;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
+        /* Auth Screens */
+        .auth-screen { display: block; text-align: center; padding: 40px 20px; }
+        .auth-screen.hidden { display: none; }
+        .logo { font-family: 'Orbitron', monospace; font-weight: 700; font-size: 2rem; color: var(--accent); margin-bottom: 20px; }
+        .subtitle { color: #8B949E; margin-bottom: 30px; font-weight: 400; }
+        .input-group { margin-bottom: 20px; text-align: left; }
+        label { display: block; margin-bottom: 8px; font-weight: 500; color: var(--light); }
+        input[type="text"], input[type="password"] {
+            width: 100%; padding: 14px; background: var(--card); border: 1px solid var(--gray); border-radius: 12px; color: white; font-size: 16px;
         }
-
-        .card-subtitle {
-            opacity: 0.9;
-            font-size: 0.9em;
-            font-weight: 400;
+        .btn { 
+            width: 100%; padding: 14px; background: linear-gradient(135deg, var(--primary), #0056b3); 
+            border: none; border-radius: 12px; color: white; font-weight: 600; font-size: 16px; cursor: pointer; margin-top: 10px;
         }
+        .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
+        .error { color: #FF6B6B; font-size: 0.85rem; margin-top: 5px; }
 
-        .card-body {
-            padding: 25px;
+        /* Main App */
+        .app { display: none; }
+        .header {
+            display: flex; justify-content: space-between; align-items: center; padding: 15px 0; margin-bottom: 25px;
         }
-
-        /* 📝 Input Styles (iOS-like) */
-        .input-field {
-            width: 100%;
-            padding: 16px 20px;
-            background: rgba(13, 17, 23, 0.6);
-            border: 2px solid var(--gray);
-            border-radius: 15px;
-            color: white;
-            font-size: 16px;
-            transition: all 0.3s;
-            margin-bottom: 15px;
-        }
-
-        .input-field:focus {
-            outline: none;
-            border-color: var(--fire);
-            box-shadow: 0 0 20px rgba(255, 107, 53, 0.3);
-        }
-
-        .input-field::placeholder {
-            color: #8B949E;
-            font-style: italic;
-        }
-
-        /* 🎮 Gaming Buttons */
-        .btn {
-            padding: 16px 24px;
-            border: none;
-            border-radius: 15px;
-            font-family: 'Inter', sans-serif;
-            font-weight: 700;
-            font-size: 15px;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: 0; left: -100%;
-            width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: left 0.5s;
-        }
-
-        .btn:hover::before {
-            left: 100%;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--fire), var(--purple));
-            color: white;
-            margin-right: 10px;
-            margin-bottom: 10px;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
-        }
-
-        .btn-success {
-            background: linear-gradient(135deg, var(--neon), #00CC44);
-            color: black;
-            margin-right: 10px;
-            margin-bottom: 10px;
-        }
-
-        .btn-danger {
-            background: linear-gradient(135deg, #FF3366, #FF6B35);
-            color: white;
-            margin-bottom: 10px;
-        }
-
-        /* ⚡ Answer Input Area */
-        .answer-zone {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-            align-items: center;
-        }
-
-        .answer-input {
-            flex: 1;
-            padding: 14px 18px;
-            background: rgba(0, 245, 255, 0.1);
-            border: 2px solid var(--cyan);
-            border-radius: 25px;
-            color: white;
-            font-size: 16px;
-            text-align: center;
-            font-weight: 600;
-        }
-
-        .check-btn {
-            padding: 14px 20px;
-            background: linear-gradient(135deg, var(--neon), #00DD55);
-            border: none;
-            border-radius: 25px;
-            color: black;
-            font-weight: 800;
-            font-size: 16px;
-            cursor: pointer;
-            animation: checkPulse 2s ease-in-out infinite;
-        }
-
-        @keyframes checkPulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
-        /* 📊 Output/Results */
-        .result-card {
-            margin-top: 20px;
-            padding: 20px;
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
-            display: none;
-            animation: slideUp 0.4s ease;
-        }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .result-correct {
-            background: rgba(57, 255, 20, 0.2);
-            border: 2px solid var(--neon);
-            color: var(--neon);
-        }
-
-        .result-wrong {
-            background: rgba(255, 51, 102, 0.2);
-            border: 2px solid #FF3366;
-            color: #FF6B9D;
-        }
-
-        .result-hint {
-            background: rgba(0, 245, 255, 0.2);
-            border: 2px solid var(--cyan);
-            color: var(--cyan);
-        }
-
-        /* 📱 Bottom Navigation */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            max-width: 420px;
-            background: rgba(13, 17, 23, 0.95);
-            backdrop-filter: blur(20px);
-            border-top: 1px solid var(--gray);
-            display: flex;
-            justify-content: space-around;
-            padding: 12px 0;
-            z-index: 100;
-        }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            padding: 8px;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s;
-            flex: 1;
-        }
-
-        .nav-item:hover, .nav-item.active {
-            background: rgba(255, 107, 53, 0.2);
-            color: var(--fire);
-        }
-
-        .nav-icon { font-size: 1.2em; }
-        .nav-label { font-size: 0.7em; font-weight: 600; }
-
-        /* 🎊 Success Animations */
-        .success-burst {
-            position: fixed;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 4em;
-            animation: successPop 0.6s ease;
-            pointer-events: none;
-            z-index: 1000;
-        }
-
-        @keyframes successPop {
-            0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
-            50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
-            100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
-        }
-
-        /* 📋 Tabs for Tools */
-        .tab-nav {
-            display: flex;
-            background: rgba(13, 17, 23, 0.8);
-            border-radius: 15px;
-            margin: 20px;
-            overflow: hidden;
-        }
-
+        .credits { background: rgba(0, 123, 255, 0.2); padding: 6px 14px; border-radius: 20px; font-weight: 600; }
+        .nav-tabs { display: flex; margin-bottom: 25px; }
         .tab-btn {
-            flex: 1;
-            padding: 15px;
-            background: transparent;
-            border: none;
-            color: #8B949E;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
+            flex: 1; padding: 12px; background: transparent; border: none; color: #8B949E; font-weight: 500; cursor: pointer;
         }
+        .tab-btn.active { color: var(--primary); border-bottom: 3px solid var(--primary); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
 
-        .tab-btn.active {
-            background: linear-gradient(135deg, var(--fire), var(--purple));
-            color: white;
+        /* Cards */
+        .card {
+            background: var(--card); border-radius: 16px; padding: 22px; margin-bottom: 20px; border: 1px solid var(--gray);
         }
-
-        .tab-content {
-            padding: 0 20px 100px;
+        .card-title { font-size: 1.2rem; font-weight: 600; margin-bottom: 16px; color: var(--accent); }
+        .card-body { margin-top: 10px; }
+        textarea, .answer-input {
+            width: 100%; padding: 14px; background: rgba(13, 17, 23, 0.6); border: 1px solid var(--gray); border-radius: 12px; color: white; font-size: 16px;
         }
+        .answer-input { text-align: center; }
 
-        /* 📚 Tool Cards */
-        .tool-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
+        /* Buttons */
+        .btn-row { display: flex; gap: 12px; margin-top: 15px; }
+        .btn-hint { background: linear-gradient(135deg, #FF6B35, #FF3366); }
+        .btn-answer { background: linear-gradient(135deg, #00C9FF, #92FE9D); color: black; font-weight: 700; }
+
+        /* Result Box */
+        .result-box {
+            padding: 16px; border-radius: 12px; margin-top: 20px; display: none;
         }
+        .result-correct { background: rgba(57, 255, 20, 0.2); border: 1px solid var(--success); color: var(--success); }
+        .result-wrong { background: rgba(255, 107, 53, 0.2); border: 1px solid #FF6B6B; color: #FF6B6B; }
+        .result-hint { background: rgba(0, 123, 255, 0.2); border: 1px solid var(--primary); color: var(--primary); }
 
+        /* Flashcards & Quizzes Grid */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 15px; margin-top: 20px;
+        }
         .tool-card {
-            background: rgba(33, 38, 45, 0.8);
+            background: var(--card); border-radius: 12px; padding: 16px; text-align: center; cursor: pointer;
             border: 1px solid var(--gray);
-            border-radius: 15px;
-            padding: 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
         }
+        .tool-icon { font-size: 1.8rem; margin-bottom: 10px; }
+        .tool-title { font-weight: 600; margin-bottom: 5px; }
 
-        .tool-card:hover {
-            border-color: var(--fire);
-            transform: scale(1.05);
-        }
+        /* Footer */
+        .footer { text-align: center; margin-top: 30px; color: #8B949E; font-size: 0.9rem; }
+        .footer a { color: var(--primary); text-decoration: none; }
 
-        .tool-icon {
-            font-size: 2em;
-            margin-bottom: 10px;
-        }
-
-        .tool-title {
-            font-weight: 600;
-            color: var(--fire);
-            margin-bottom: 5px;
-        }
-
-        /* 💫 Responsive for larger screens */
         @media (min-width: 768px) {
-            .app-container {
-                max-width: 800px;
-                border-radius: 25px;
-                margin-top: 20px;
-                margin-bottom: 20px;
-            }
-            
-            .bottom-nav {
-                border-radius: 0 0 25px 25px;
-            }
+            .container { max-width: 800px; padding: 40px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Animated Background -->
-    <div class="bg-animation"></div>
-    <div class="grid-overlay"></div>
+<!-- 🔐 AUTH SCREENS -->
+<div id="authScreen" class="auth-screen">
+    <div class="logo">🔥 Makmatics</div>
+    <p class="subtitle">Math made simple — for students like you.</p>
 
-    <!-- Mobile App Container -->
-    <div class="app-container">
-        
-        <!-- Header -->
-        <div class="mobile-header">
-            <div class="logo-mobile">🔥 Makmatics</div>
-            <div class="streak-display">
-                <span>⚡</span>
-                <span id="streakCount">0</span>
-                <span>day streak</span>
-            </div>
-            <div class="credits-mobile" id="creditDisplay">💎 300</div>
-        </div>
-
-        <!-- Main AI Solver -->
-        <div class="content-card">
-            <div class="card-header">
-                <div class="card-title">
-                    🧠 AI Math Wizard
-                </div>
-                <div class="card-subtitle">Drop your hardest problems here 💪</div>
-            </div>
-            <div class="card-body">
-                <textarea 
-                    id="problemInput" 
-                    class="input-field" 
-                    placeholder="Type any math problem... (e.g., solve 2x + 5 = 15)"
-                    rows="3"
-                ></textarea>
-                
-                <div>
-                    <button class="btn btn-primary" onclick="getHint()">💡 Smart Hint (2💎)</button>
-                    <button class="btn btn-danger" onclick="revealAnswer()">🔓 Full Answer (5💎)</button>
-                </div>
-
-                <div class="answer-zone">
-                    <input type="text" id="userAttempt" class="answer-input" placeholder="Your answer...">
-                    <button class="check-btn" onclick="checkUserAnswer()">✅</button>
-                </div>
-
-                <div id="aiOutput" class="result-card"></div>
-            </div>
-        </div>
-
-        <!-- Learning Tools Tabs -->
-        <div class="tab-nav">
-            <button class="tab-btn active" onclick="switchTab('flashcards', this)">📝 Cards</button>
-            <button class="tab-btn" onclick="switchTab('quizzes', this)">❓ Quiz</button>
-            <button class="tab-btn" onclick="switchTab('badges', this)">🏆 Badges</button>
-        </div>
-
-        <!-- Tab Contents -->
-        <div id="flashcards" class="tab-content">
-            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-                <input id="fFront" class="input-field" placeholder="Question" style="flex: 1;">
-                <input id="fBack" class="input-field" placeholder="Answer" style="flex: 1;">
-                <button class="btn btn-success" onclick="addFlashcard()">➕</button>
-            </div>
-            <div id="flashGrid" class="tool-grid"></div>
-        </div>
-
-        <div id="quizzes" class="tab-content" style="display: none;">
-            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-                <input id="qQuestion" class="input-field" placeholder="Quiz Question" style="flex: 1;">
-                <input id="qAnswer" class="input-field" placeholder="Correct Answer" style="flex: 1;">
-                <button class="btn btn-success" onclick="addQuiz()">➕</button>
-            </div>
-            <div id="quizGrid" class="tool-grid"></div>
-        </div>
-
-        <div id="badges" class="tab-content" style="display: none;">
-            <div class="tool-grid">
-                <div class="tool-card">
-                    <div class="tool-icon">🔥</div>
-                    <div class="tool-title">Fire Streak</div>
-                    <div style="font-size: 0.8em; color: #8B949E;">7 days in a row</div>
-                </div>
-                <div class="tool-card">
-                    <div class="tool-icon">🧠</div>
-                    <div class="tool-title">Big Brain</div>
-                    <div style="font-size: 0.8em; color: #8B949E;">100 correct answers</div>
-                </div>
-                <div class="tool-card">
-                    <div class="tool-icon">⚡</div>
-                    <div class="tool-title">Speed Demon</div>
-                    <div style="font-size: 0.8em; color: #8B949E;">Solve in under 30s</div>
-                </div>
-                <div class="tool-card">
-                    <div class="tool-icon">🎯</div>
-                    <div class="tool-title">Perfectionist</div>
-                    <div style="font-size: 0.8em; color: #8B949E;">100% accuracy</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Bottom Navigation -->
-        <div class="bottom-nav">
-            <div class="nav-item active">
-                <div class="nav-icon">🏠</div>
-                <div class="nav-label">Home</div>
-            </div>
-            <div class="nav-item">
-                <div class="nav-icon">📊</div>
-                <div class="nav-label">Stats</div>
-            </div>
-            <div class="nav-item">
-                <div class="nav-icon">🎮</div>
-                <div class="nav-label">Battle</div>
-            </div>
-            <div class="nav-item">
-                <div class="nav-icon">👥</div>
-                <div class="nav-label">Friends</div>
-            </div>
-            <div class="nav-item">
-                <div class="nav-icon">⚙️</div>
-                <div class="nav-label">Settings</div>
-            </div>
-        </div>
-
+    <div class="input-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" placeholder="e.g., althafsm" maxlength="20" />
+        <div id="usernameError" class="error"></div>
     </div>
 
-    <script>
-        // 🎮 Game System
-        let credits = 300;
-        let streak = parseInt(localStorage.getItem('makStreak')) || 0;
-        let correctAnswers = parseInt(localStorage.getItem('makCorrect')) || 0;
-        
-        // Data Storage
-        let flashcards = JSON.parse(localStorage.getItem('makFlash')) || [];
-        let quizzes = JSON.parse(localStorage.getItem('makQuiz')) || [];
+    <div class="input-group">
+        <label for="pin">6-Digit PIN</label>
+        <input type="password" id="pin" placeholder="••••••" maxlength="6" pattern="[0-9]{6}" />
+        <div id="pinError" class="error"></div>
+    </div>
 
-        // Update UI
-        function updateDisplay() {
-            document.getElementById('creditDisplay').textContent = `💎 ${credits}`;
-            document.getElementById('streakCount').textContent = streak;
+    <button id="signupBtn" class="btn">Create Account</button>
+    <button id="loginBtn" class="btn btn-outline">Already have an account?</button>
+</div>
+
+<div id="loginScreen" class="auth-screen hidden">
+    <div class="logo">🔐 Login to Makmatics</div>
+    <p class="subtitle">Enter your credentials to continue learning.</p>
+
+    <div class="input-group">
+        <label for="loginUsername">Username</label>
+        <input type="text" id="loginUsername" placeholder="e.g., althafsm" />
+    </div>
+
+    <div class="input-group">
+        <label for="loginPin">PIN</label>
+        <input type="password" id="loginPin" placeholder="••••••" />
+    </div>
+
+    <button id="submitLogin" class="btn">Sign In</button>
+    <button id="backToSignup" class="btn btn-outline">← Back to Sign Up</button>
+</div>
+
+<!-- 🧠 MAIN APP -->
+<div id="app" class="app">
+    <div class="container">
+        <div class="header">
+            <h1>Makmatics-ai</h1>
+            <div class="credits">💎 <span id="creditCount">300</span></div>
+        </div>
+
+        <div class="nav-tabs">
+            <button class="tab-btn active" data-tab="solver">🧮 Solver</button>
+            <button class="tab-btn" data-tab="flashcards">📝 Flashcards</button>
+            <button class="tab-btn" data-tab="quizzes">❓ Quiz</button>
+        </div>
+
+        <!-- 🧮 SOLVER TAB -->
+        <div id="solver" class="tab-content active">
+            <div class="card">
+                <h2 class="card-title">Ask Your Math Question</h2>
+                <textarea id="problemInput" rows="3" placeholder="Type any math problem... e.g., solve 2x + 5 = 15"></textarea>
+                
+                <div class="btn-row">
+                    <button class="btn btn-hint" onclick="getHint()">💡 Smart Hint (2💎)</button>
+                    <button class="btn btn-answer" onclick="revealAnswer()">🔓 Full Answer (5💎)</button>
+                </div>
+
+                <div class="card-body">
+                    <p style="margin-bottom:12px;">Your answer:</p>
+                    <input type="text" id="userAttempt" class="answer-input" placeholder="e.g., x = 5" />
+                    <button class="btn" onclick="checkUserAnswer()" style="margin-top:12px;">✅ Check My Answer</button>
+                </div>
+
+                <div id="solverResult" class="result-box"></div>
+            </div>
+        </div>
+
+        <!-- 📝 FLASHCARDS TAB -->
+        <div id="flashcards" class="tab-content">
+            <div class="card">
+                <h2 class="card-title">Create Flashcards</h2>
+                <div class="input-group">
+                    <label>Question</label>
+                    <input type="text" id="fFront" placeholder="What is the Pythagorean theorem?" />
+                </div>
+                <div class="input-group">
+                    <label>Answer</label>
+                    <input type="text" id="fBack" placeholder="a² + b² = c²" />
+                </div>
+                <button class="btn" onclick="addFlashcard()">➕ Add Flashcard</button>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">Your Flashcards</h2>
+                <div id="flashGrid" class="grid"></div>
+            </div>
+        </div>
+
+        <!-- ❓ QUIZZES TAB -->
+        <div id="quizzes" class="tab-content">
+            <div class="card">
+                <h2 class="card-title">Create a Quiz</h2>
+                <div class="input-group">
+                    <label>Question</label>
+                    <input type="text" id="qQuestion" placeholder="What is 12 × 8?" />
+                </div>
+                <div class="input-group">
+                    <label>Correct Answer</label>
+                    <input type="text" id="qAnswer" placeholder="96" />
+                </div>
+                <button class="btn" onclick="addQuiz()">➕ Add Quiz</button>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">Your Quizzes</h2>
+                <div id="quizGrid" class="grid"></div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Makmatics-ai • Made with ❤️ for students in Frankfurt & beyond</p>
+            <p><a href="#" onclick="logout()">Sign out</a></p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 🎮 Game State
+    let credits = 300;
+    let streak = 0;
+    let correctAnswers = 0;
+    let username = "";
+    let flashcards = [];
+    let quizzes = [];
+
+    // DOM Elements
+    const authScreen = document.getElementById("authScreen");
+    const loginScreen = document.getElementById("loginScreen");
+    const app = document.getElementById("app");
+    const creditCount = document.getElementById("creditCount");
+
+    // Initialize
+    function init() {
+        // Load saved user data if exists
+        const saved = localStorage.getItem("makmatics_user");
+        if (saved) {
+            const user = JSON.parse(saved);
+            username = user.username;
+            credits = user.credits || 300;
+            streak = user.streak || 0;
+            correctAnswers = user.correctAnswers || 0;
+            flashcards = user.flashcards || [];
+            quizzes = user.quizzes || [];
+            showApp();
+        }
+    }
+
+    // Show app screen
+    function showApp() {
+        authScreen.classList.add("hidden");
+        loginScreen.classList.add("hidden");
+        app.classList.remove("hidden");
+        creditCount.textContent = credits;
+        renderFlashcards();
+        renderQuizzes();
+    }
+
+    // Tab switching
+    document.querySelectorAll(".tab-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+            const tab = btn.getAttribute("data-tab");
+            document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
+            document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+            document.getElementById(tab).classList.add("active");
+            btn.classList.add("active");
+        });
+    });
+
+    // Sign up
+    document.getElementById("signupBtn").addEventListener("click", () => {
+        const u = document.getElementById("username").value.trim();
+        const p = document.getElementById("pin").value;
+
+        if (!u || u.length < 3) {
+            document.getElementById("usernameError").textContent = "Username must be at least 3 characters";
+            return;
+        }
+        if (!p || p.length !== 6 || !/^\d{6}$/.test(p)) {
+            document.getElementById("pinError").textContent = "PIN must be exactly 6 digits";
+            return;
         }
 
-        // 🧠 Math Solver (Enhanced)
-        function solveInternal(input) {
-            try {
-                input = input.toLowerCase().trim();
-                
-                if (input.includes('solve') || input.includes('=')) {
-                    let equation = input.replace(/solve/g, '').replace(/find x/g, '').trim();
-                    let solution = nerdamer.solve(equation, 'x');
-                    return { 
-                        type: 'equation', 
-                        answer: solution.toString().replace(/[\[\]]/g, ''),
-                        step: "Move all terms with variables to one side, constants to the other" 
-                    };
-                }
-                
-                if (input.match(/[\+\-\*\/\^\(\)0-9\s]/)) {
-                    let result = nerdamer(input).evaluate();
-                    return { 
-                        type: 'calculation', 
-                        answer: result.text(),
-                        step: "Follow order of operations (PEMDAS)" 
-                    };
-                }
-                
-                return { 
-                    type: 'text', 
-                    answer: "I can solve math equations and calculations!",
-                    step: "Try: 'solve 2x + 5 = 15' or '3 * (4 + 2)'" 
-                };
-                
-            } catch (error) {
-                return null;
+        // Save user
+        const user = { username: u, pin: p, credits: 300, streak: 0, correctAnswers: 0, flashcards: [], quizzes: [] };
+        localStorage.setItem("makmatics_user", JSON.stringify(user));
+        username = u;
+        credits = 300;
+        showApp();
+    });
+
+    // Login
+    document.getElementById("loginBtn").addEventListener("click", () => {
+        authScreen.classList.add("hidden");
+        loginScreen.classList.remove("hidden");
+    });
+
+    document.getElementById("submitLogin").addEventListener("click", () => {
+        const u = document.getElementById("loginUsername").value.trim();
+        const p = document.getElementById("loginPin").value;
+
+        const saved = localStorage.getItem("makmatics_user");
+        if (saved) {
+            const user = JSON.parse(saved);
+            if (user.username === u && user.pin === p) {
+                username = u;
+                credits = user.credits || 300;
+                streak = user.streak || 0;
+                correctAnswers = user.correctAnswers || 0;
+                flashcards = user.flashcards || [];
+                quizzes = user.quizzes || [];
+                showApp();
+                return;
             }
         }
+        alert("❌ Incorrect username or PIN. Try again!");
+    });
 
-        // 💡 Get Hint
-        function getHint() {
-            if (credits < 2) {
-                showResult('Not enough credits! Complete daily challenges to earn more 💪', 'wrong');
-                return;
+    document.getElementById("backToSignup").addEventListener("click", () => {
+        loginScreen.classList.add("hidden");
+        authScreen.classList.remove("hidden");
+    });
+
+    // Logout
+    function logout() {
+        localStorage.removeItem("makmatics_user");
+        username = "";
+        credits = 300;
+        streak = 0;
+        correctAnswers = 0;
+        flashcards = [];
+        quizzes = [];
+        authScreen.classList.remove("hidden");
+        app.classList.add("hidden");
+        loginScreen.classList.add("hidden");
+    }
+
+    // Math solver
+    function solveInternal(input) {
+        try {
+            input = input.toLowerCase().trim();
+            if (input.includes("solve") || input.includes("=")) {
+                let eq = input.replace(/solve/g, "").replace(/find x/g, "").trim();
+                let sol = nerdamer.solve(eq, "x");
+                return { type: "equation", answer: sol.toString().replace(/[\[\]]/g, "") };
             }
-            
-            let input = document.getElementById('problemInput').value;
-            if (!input) {
-                showResult('Drop a math problem first! 🎯', 'wrong');
-                return;
+            if (input.match(/[\+\-\*\/\^\(\)0-9\s]/)) {
+                let res = nerdamer(input).evaluate();
+                return { type: "calculation", answer: res.text() };
             }
+            return { type: "text", answer: "Try: 'solve 2x + 5 = 15' or '3 * (4 + 2)'" };
+        } catch (e) {
+            return null;
+        }
+    }
 
-            credits -= 2;
-            updateDisplay();
-
-            let result = solveInternal(input);
-            
-            if (result) {
-                showResult(`💡 <strong>Pro Tip:</strong><br>${result.step}<br><br><em>You got this! Think step by step 🧠</em>`, 'hint');
+    // Hint
+    function getHint() {
+        if (credits < 2) {
+            showResult("Not enough credits! Solve problems to earn more.", "wrong");
+            return;
+        }
+        const input = document.getElementById("problemInput").value;
+        if (!input) {
+            showResult("Type a math problem first!", "wrong");
+            return;
+        }
+        credits -= 2;
+        creditCount.textContent = credits;
+        const result = solveInternal(input);
+        if (result) {
+            let hint = "💡 Pro Tip:<br>";
+            if (result.type === "equation") {
+                hint += "Move variables to one side, constants to the other.<br><br>Example: For 2x + 5 = 15, subtract 5 from both sides first.";
+            } else if (result.type === "calculation") {
+                hint += "Follow PEMDAS: Parentheses → Exponents → Multiplication/Division → Addition/Subtraction.<br><br>Example: For 3 * (4 + 2), do parentheses first!";
             } else {
-                showResult('🤔 Try rephrasing your question. I work best with equations and calculations!', 'hint');
+                hint += "Be specific! Try 'solve 2x + 5 = 15'";
             }
+            showResult(hint, "hint");
+        } else {
+            showResult("Could not understand that problem. Try rephrasing!", "wrong");
         }
+    }
 
-        // ✅ Check Answer
-        function checkUserAnswer() {
-            let userAnswer = document.getElementById('userAttempt').value.trim();
-            let input = document.getElementById('problemInput').value.trim();
-            
-            if (!userAnswer) {
-                showResult('Type your answer first! 📝', 'wrong');
-                return;
-            }
-            
-            if (!input) {
-                showResult('Need a problem to check against! 🎯', 'wrong');
-                return;
-            }
-
-            let result = solveInternal(input);
-            
-            if (!result) {
-                showResult('Could not solve this problem automatically 😅', 'wrong');
-                return;
-            }
-
-            // Clean answers for comparison
-            let cleanUser = userAnswer.replace(/[\s\[\]]/g, '').toLowerCase();
-            let cleanCorrect = result.answer.replace(/[\s\[\]]/g, '').toLowerCase();
-
-            if (cleanUser === cleanCorrect) {
-                // 🎉 CORRECT!
-                correctAnswers++;
-                localStorage.setItem('makCorrect', correctAnswers);
-                
-                showSuccessBurst('🎉');
-                confetti({ 
-                    particleCount: 100, 
-                    spread: 70, 
-                    origin: { y: 0.6 },
-                    colors: ['#FF6B35', '#7209B7', '#00F5FF', '#39FF14']
-                });
-                
-                showResult(`<strong>YESSS! 🔥</strong><br>You absolutely crushed it!<br><br>🏆 Correct Answers: ${correctAnswers}`, 'correct');
-                
-                // Clear inputs
-                document.getElementById('userAttempt').value = '';
-                
-            } else {
-                showResult(`Not quite there yet! 💪<br><br>Keep trying - you're learning with every attempt!<br><em>Hint: The answer is ${result.answer}</em>`, 'wrong');
-            }
+    // Reveal answer
+    function revealAnswer() {
+        if (credits < 5) {
+            showResult("Need 5💎 to reveal answer!", "wrong");
+            return;
         }
-
-        // 🔓 Reveal Answer
-        function revealAnswer() {
-            if (credits < 5) {
-                showResult('Need 5💎 to reveal answer! Earn more by solving problems 🎯', 'wrong');
-                return;
-            }
-            
-            let input = document.getElementById('problemInput').value;
-            let result = solveInternal(input);
-            
-            if (!result) {
-                showResult('Could not solve this automatically 😅', 'wrong');
-                return;
-            }
-
-            if (confirm('Sure? This costs 5💎! Try solving it first - you might surprise yourself! 💪')) {
-                credits -= 5;
-                updateDisplay();
-                showResult(`🔓 <strong>The answer is: ${result.answer}</strong><br><br>Now try a similar problem to practice! 🎯`, 'hint');
-            }
+        const input = document.getElementById("problemInput").value;
+        const result = solveInternal(input);
+        if (result) {
+            credits -= 5;
+            creditCount.textContent = credits;
+            showResult(`🔓 Answer: <strong>${result.answer}</strong><br><br>Now try solving a similar problem!`, "hint");
+        } else {
+            showResult("Could not solve this automatically.", "wrong");
         }
+    }
 
-        // 📱 Show Result
-        function showResult(message, type) {
-            let output = document.getElementById('aiOutput');
-            output.innerHTML = message;
-            output.className = `result-card result-${type}`;
-            output.style.display = 'block';
-            
-            // Auto hide after 10 seconds
-            setTimeout(() => {
-                output.style.display = 'none';
-            }, 10000);
+    // Check answer
+    function checkUserAnswer() {
+        const userAns = document.getElementById("userAttempt").value.trim();
+        const input = document.getElementById("problemInput").value.trim();
+        if (!userAns) {
+            showResult("Type your answer first!", "wrong");
+            return;
         }
-
-        // 🎊 Success Animation
-        function showSuccessBurst(emoji) {
-            let burst = document.createElement('div');
-            burst.className = 'success-burst';
-            burst.textContent = emoji;
-            document.body.appendChild(burst);
-            
-            setTimeout(() => {
-                burst.remove();
-            }, 600);
+        if (!input) {
+            showResult("Need a problem to check against!", "wrong");
+            return;
         }
+        const result = solveInternal(input);
+        if (!result) {
+            showResult("Could not solve this automatically.", "wrong");
+            return;
+        }
+        const cleanUser = userAns.replace(/\s+/g, "").toLowerCase();
+        const cleanCorrect = result.answer.replace(/\s+/g, "").toLowerCase();
+        if (cleanUser === cleanCorrect) {
+            correctAnswers++;
+            streak++;
+            credits += 10; // Reward for correct answer!
+            creditCount.textContent = credits;
+            showResult(`🎉 YES! You got it!<br><br>✅ Correct Answers: ${correctAnswers}<br>⚡ Streak: ${streak} days`, "correct");
+            document.getElementById("userAttempt").value = "";
+        } else {
+            showResult(`❌ Not quite right yet.<br><br>Hint: The answer is <strong>${result.answer}</strong>`, "wrong");
+        }
+    }
 
-        // 📱 Tab Switching
-        function switchTab(tabName, button) {
-            // Hide all tabs
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.style.display = 'none';
-            });
-            
-            // Remove
+    // Show result
+    function showResult(msg, type) {
+        const el = document.getElementById("solverResult");
+        el.innerHTML = msg;
+        el.className = `result-box result-${type}`;
+        el.style.display = "block";
+        setTimeout(() => el.style.display = "none", 8000);
+    }
+
+    // Flashcards
+    function addFlashcard() {
+        const f = document.getElementById("fFront").value.trim();
+        const b = document.getElementById("fBack").value.trim();
+        if (f && b) {
+            flashcards.push({ front: f, back: b });
+            saveUserData();
+            renderFlashcards();
+            document.getElementById("fFront").value = "";
+            document.getElementById("fBack").value = "";
+        }
+    }
+
+    function renderFlashcards() {
+        const grid = document.getElementById("flashGrid");
+        grid.innerHTML = flashcards.map((c, i) => `
+            <div class="tool-card" onclick="alert('Answer: ${c.back}')">
+                <div class="tool-icon">📝</div>
+                <div class="tool-title">${c.front.substring(0, 20)}${c.front.length > 20 ? "..." : ""}</div>
+                <div style="font-size:0.8em;color:#8B949E">Tap to reveal</div>
+            </div>
+        `).join('');
+    }
+
+    // Quizzes
+    function addQuiz() {
+        const q = document.getElementById("qQuestion").value.trim();
+        const a = document.getElementById("qAnswer").value.trim();
+        if (q && a) {
+            quizzes.push({ question: q, answer: a });
+            saveUserData();
+            renderQuizzes();
+            document.getElementById("qQuestion").value = "";
+            document.getElementById("qAnswer").value = "";
+        }
+    }
+
+    function renderQuizzes() {
+        const grid = document.getElementById("quizGrid");
+        grid.innerHTML = quizzes.map((q, i) => `
+            <div class="tool-card" onclick="playQuiz('${q.answer}')">
+                <div class="tool-icon">❓</div>
+                <div class="tool-title">${q.question.substring(0, 20)}${q.question.length > 20 ? "..." : ""}</div>
+                <div style="font-size:0.8em;color:#8B949E">Tap to play</div>
+            </div>
+        `).join('');
+    }
+
+    function playQuiz(correct) {
+        const ans = prompt("Your answer:");
+        if (ans && ans.trim().toLowerCase() === correct.toLowerCase()) {
+            alert("🎉 Correct! You're awesome!");
+        } else {
+            alert(`❌ Wrong! The answer was: ${correct}`);
+        }
+    }
+
+    // Save user data
+    function saveUserData() {
+        const user = {
+            username,
+            pin: JSON.parse(localStorage.getItem("makmatics_user")).pin,
+            credits,
+            streak,
+            correctAnswers,
+            flashcards,
+            quizzes
+        };
+        localStorage.setItem("makmatics_user", JSON.stringify(user));
+    }
+
+    // Initialize on load
+    window.onload = init;
+</script>
+
+</body>
+</html>
